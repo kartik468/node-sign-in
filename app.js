@@ -15,17 +15,19 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 
 // for authentication
-//var passport = require('passport');
+var passport = require('passport');
 
 // The flash is a special area of the session used for storing messages. Messages are written to the flash and cleared after being displayed to the user.
-// var flash = require('connect-flash');
+var flash = require('connect-flash');
 
 // An express.js middleware for node-validator.
 var validator = require('express-validator');
 
-var routes = require('./routes/user');
+var userRoutes = require('./routes/user');
 
 var app = express();
+mongoose.connect('localhost:27017/shopping');
+require('./config/passport');
 
 // view engine setup
 app.engine('.hbs', expressHbs({defaultLayout: 'layout', extname: '.hbs'}));
@@ -38,13 +40,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(validator());
 app.use(cookieParser());
-app.use(session({secret: 'mysupersecret', resave: false, saveUninitialized: false}));
-// app.use(flash());
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(session({secret: 'mysecret', resave: false, saveUninitialized: false}));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+app.use('/', userRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
