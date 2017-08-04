@@ -21,7 +21,7 @@ function notLoggedIn(req, res, next) {
 }
 
 router.get('/user/profile', isLoggedIn, function (req, res, next) {
-    res.render('user/profile');
+    res.render('user/profile', {user: req.user});
 });
 
 /* GET home page. */
@@ -50,5 +50,23 @@ router.post('/user/signup', passport.authenticate('local.signup', {
     failureRedirect: '/user/signup',
     failureFlash: true
 }));
+
+router.get('/user/logout', function(req, res, next) {
+  req.logout();
+  res.redirect('/');
+});
+
+
+// fb routes
+router.get('/user/auth/facebook',
+passport.authenticate('facebook', {scope: ['email']}));
+
+router.get('/user/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/user/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/user/profile');
+  });
+
 
 module.exports = router;

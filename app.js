@@ -28,6 +28,7 @@ var userRoutes = require('./routes/user');
 var app = express();
 mongoose.connect('localhost:27017/shopping');
 require('./config/passport');
+require('./config/passport-fb');
 
 // view engine setup
 app.engine('.hbs', expressHbs({defaultLayout: 'layout', extname: '.hbs'}));
