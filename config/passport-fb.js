@@ -19,12 +19,12 @@ passport.use(new FacebookStrategy({
               return done(err);
           }
           if (user) {
-              return done(null, false, {message: 'Email is already in use.'});
+              return done(null, user);
           }
           var newUser = new User();
           newUser.facebook.id = profile.id;
-          newUser.facebook.name = profile.name.givenName + " " + profile.name.familyName;
-          newUser.facebook.name = profile.emails[0].value;
+          newUser.facebook.name = profile.displayName;
+          //newUser.facebook.name = profile.emails[0].value;
           newUser.facebook.token = accessToken;
           newUser.save(function(err, result) {
              if (err) {

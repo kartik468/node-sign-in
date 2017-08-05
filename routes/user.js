@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var csrf = require('csurf');
+// var csrf = require('csurf');
 var passport = require('passport');
 
-var csrfProtection = csrf();
-router.use(csrfProtection);
+// var csrfProtection = csrf();
+// router.use(csrfProtection);
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
@@ -58,8 +58,11 @@ router.get('/user/logout', function(req, res, next) {
 
 
 // fb routes
-router.get('/user/auth/facebook',
-passport.authenticate('facebook', {scope: ['email']}));
+router.get('/user/auth/facebook', passport.authenticate('facebook', {
+    scope: 'email',
+    authType: 'reauthenticate',
+    authNonce: 'foo123'
+  }));
 
 router.get('/user/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/user/login' }),
