@@ -10,10 +10,6 @@ passport.use(new FacebookStrategy({
     callbackURL: auth.facebookAuth.callbackURL
   },
   function(accessToken, refreshToken, profile, done) {
-      // User.findOrCreate(..., function(err, user) {
-      //   if (err) { return done(err); }
-      //   done(null, user);
-      // });
       User.findOne({"facebook.id": profile.id}, function (err, user) {
           if (err) {
               return done(err);
@@ -24,7 +20,6 @@ passport.use(new FacebookStrategy({
           var newUser = new User();
           newUser.facebook.id = profile.id;
           newUser.facebook.name = profile.displayName;
-          //newUser.facebook.name = profile.emails[0].value;
           newUser.facebook.token = accessToken;
           newUser.save(function(err, result) {
              if (err) {
