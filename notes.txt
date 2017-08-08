@@ -1,0 +1,20 @@
+
+-- MongoDB --
+sudo systemctl start mongodb
+sudo systemctl status mongodb
+and finally enable it permanently by
+sudo systemctl enable mongodb
+
+
+-- imp links --
+Amazon app for clientID and clientSecret
+https://sellercentral.amazon.com/gp/homepage.html
+
+Cognito nodejs github
+https://github.com/awslabs/cognito-sample-nodejs
+
+Amazon cognito identity
+https://github.com/aws/amazon-cognito-identity-js
+
+AWS sdk
+https://github.com/aws/aws-sdk-js

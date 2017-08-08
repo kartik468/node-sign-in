@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "nodemon": "nodemon ./bin/www",
+    "start": "node ./server.js",
+    "nodemon": "nodemon ./server.js",
     "debug": "node --inspect --debug-brk app.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.94.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.13.2",
     "connect-flash": "^0.1.1",
@@ -22,6 +23,7 @@
     "mongoose": "^4.11.5",
     "morgan": "~1.6.1",
     "passport": "^0.3.2",
+    "passport-amazon": "^1.0.0",
     "passport-facebook": "^2.1.1",
     "passport-local": "^1.0.0",
     "serve-favicon": "~2.3.0"

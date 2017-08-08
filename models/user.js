@@ -11,6 +11,13 @@ var userSchema = new Schema({
       token: String,
       email: String,
       name: String
+    },
+
+    amazon: {
+      id: String,
+      token: String,
+      email: String,
+      name: String
     }
 });
 

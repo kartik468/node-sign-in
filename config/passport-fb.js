@@ -2,7 +2,7 @@
 var passport = require('passport');
 var User = require('../models/user');
 var FacebookStrategy = require('passport-facebook').Strategy;
-var auth = require('./auth')
+var auth = require('./auth');
 
 passport.use(new FacebookStrategy({
     clientID: auth.facebookAuth.clientID,

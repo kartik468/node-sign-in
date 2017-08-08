@@ -20,7 +20,7 @@ function notLoggedIn(req, res, next) {
     res.redirect('/');
 }
 
-router.get('/user/profile', isLoggedIn, function (req, res, next) {
+router.get('/profile', isLoggedIn, function (req, res, next) {
     res.render('user/profile', {user: req.user});
 });
 
@@ -29,47 +29,60 @@ router.get('/', function(req, res, next) {
   res.render('home/index', { title: 'Node Authentication' });
 });
 
-router.get('/user/signin', function(req, res, next) {
+router.get('/signin', function(req, res, next) {
   var messages = req.flash('error');
   res.render('user/signin', {messages: messages, hasErrors: messages.length > 0});
 });
 
-router.post('/user/signin', passport.authenticate('local.signin', {
-    successRedirect: '/user/profile',
-    failureRedirect: '/user/signin',
+router.post('/signin', passport.authenticate('local.signin', {
+    successRedirect: '/profile',
+    failureRedirect: '/signin',
     failureFlash: true
 }));
 
-router.get('/user/signup', function(req, res, next) {
+router.get('/signup', function(req, res, next) {
   var messages = req.flash('error');
   res.render('user/signup', {messages: messages, hasErrors: messages.length > 0});
 });
 
-router.post('/user/signup', passport.authenticate('local.signup', {
-    successRedirect: '/user/profile',
-    failureRedirect: '/user/signup',
+router.post('/signup', passport.authenticate('local.signup', {
+    successRedirect: '/profile',
+    failureRedirect: '/signup',
     failureFlash: true
 }));
 
-router.get('/user/logout', function(req, res, next) {
+router.get('/logout', function(req, res, next) {
   req.logout();
   res.redirect('/');
 });
 
 
 // fb routes
-router.get('/user/auth/facebook', passport.authenticate('facebook', {
+router.get('/auth/facebook', passport.authenticate('facebook', {
     scope: 'email',
     authType: 'reauthenticate',
     authNonce: 'foo123'
   }));
 
-router.get('/user/auth/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/user/login' }),
+router.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    res.redirect('/user/profile');
+    res.redirect('/profile');
   });
 
+
+// amazon app routes
+router.get('/auth/amazon',
+  passport.authenticate('amazon', {
+        scope: ['profile']
+    }));
+
+router.get('/auth/amazon/callback',
+  passport.authenticate('amazon', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/profile');
+  });
 
 module.exports = router;

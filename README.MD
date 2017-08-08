@@ -1,3 +1,9 @@
-## Tutorial on How to Build a Shopping Cart with NodeJS/ Express
+## Node authentication
 
-This repository holds the source code of my YouTube series on how to create a shopping cart with NodeJS/Express/MongoDB
+This repository holds authentication examples using nodejs with passport.
+
+You should have MongoDB installed on running on its default port.
+Run --> npm install
+Run --> npm run start
+
+Head over to localhost:3000
