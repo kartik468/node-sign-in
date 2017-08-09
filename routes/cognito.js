@@ -16,9 +16,10 @@ router.post('/signup', function(req, res, next) {
   var messages = req.flash('error');
 
   var poolData = {
-      UserPoolId : auth.AWS.UserPoolId, // Your user pool id here
-      ClientId : auth.AWS.ClientId // Your client id here
+      UserPoolId : auth.AWS.UserPoolId,
+      ClientId : auth.AWS.ClientId
   };
+
   var userPool = new AWSCognito.CognitoUserPool(poolData);
 
   var attributeList = [];
@@ -37,15 +38,63 @@ router.post('/signup', function(req, res, next) {
               messages.push(key + ' : ' + err[key]);
             }
           }
-          res.render('cognito/confirm-user', {messages: messages, hasErrors: messages.length > 0});
+          res.render('cognito/signup', {messages: messages, hasErrors: messages.length > 0});
           return;
       }
-      cognitoUser = result.user;
+      req.session.cognitoUser = cognitoUser = result.user;
+      req.session.cognitoUserConfirmed = result.userConfirmed;
       console.log('user name is ' + cognitoUser.getUsername());
+      res.render('cognito/confirm-user', {messages: messages, hasErrors: messages.length > 0});
+  });
+});
+
+router.post('/confirm-user', function(req, res, next) {
+  var messages = req.flash('error');
+
+  var poolData = {
+      UserPoolId : auth.AWS.UserPoolId,
+      ClientId : auth.AWS.ClientId
+  };
+
+  var userPool = new AWSCognito.CognitoUserPool(poolData);
+  var userData = {
+      Username : 'username',
+      Pool : userPool
+  };
+
+  var cognitoUser = new AWSCognito.CognitoUser(userData);
+  cognitoUser.confirmRegistration(req.body.code, true, function(err, result) {
+      if (err) {
+          alert(err);
+          return;
+      }
+      console.log('call result: ' + result);
       res.render('cognito/profile', {messages: messages, hasErrors: messages.length > 0});
   });
+});
 
+router.post('/resend-code', function(req, res, next) {
+  var messages = req.flash('error');
 
+  var poolData = {
+      UserPoolId : auth.AWS.UserPoolId,
+      ClientId : auth.AWS.ClientId
+  };
+
+  var userPool = new AWSCognito.CognitoUserPool(poolData);
+  var userData = {
+      Username : 'username',
+      Pool : userPool
+  };
+
+  var cognitoUser = new AWSCognito.CognitoUser(userData);
+  cognitoUser.resendConfirmationCode(function(err, result) {
+      if (err) {
+          alert(err);
+          return;
+      }
+      console.log('call result: ' + result);
+  });
 });
 
 module.exports = router;
