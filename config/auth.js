@@ -9,5 +9,9 @@ module.exports = {
     "clientID": "amzn1.application-oa2-client.8fecce9202034e5f82947ce5d14aace8",
     "clientSecret": "f1a4b8a5eaccc9d9e275a9b25842dfefe9ea36135ce1f6765a25f13b67940df8",
     "callbackURL": "http://localhost:3000/user/auth/amazon/callback"
+  },
+  "AWS": {
+    "UserPoolId": "ap-south-1_E6Riai7xi",
+    "ClientId": "4cvdo1mvnomaist56v6f5gq44r"
   }
 }

@@ -24,6 +24,7 @@ var flash = require('connect-flash');
 var validator = require('express-validator');
 
 var userRoutes = require('./routes/user');
+var cognitoRoutes = require('./routes/cognito');
 
 var app = express();
 mongoose.connect('localhost:27017/shopping');
@@ -49,6 +50,7 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', userRoutes);
+app.use('/cognito', cognitoRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
