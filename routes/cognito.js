@@ -27,11 +27,11 @@ router.post('/signup', function(req, res, next) {
   var attributePhoneNumber = new AWSCognito.CognitoUserAttribute('phone_number', req.body.phone);
 
   attributeList.push(attributeEmail);
-  attributeList.push(attributePhoneNumber);
+  // attributeList.push(attributePhoneNumber);
+  var username = req.body.username;
+  var password = req.body.password;
 
-  var cognitoUser;
-
-  userPool.signUp('username', 'password', attributeList, null, function(err, result){
+  userPool.signUp(username, password, attributeList, null, function(err, result){
       if (err) {
           for (var key in err) {
             if (err.hasOwnProperty(key) && typeof(err[key]) !== 'function') {
@@ -41,9 +41,9 @@ router.post('/signup', function(req, res, next) {
           res.render('cognito/signup', {messages: messages, hasErrors: messages.length > 0});
           return;
       }
-      req.session.cognitoUser = cognitoUser = result.user;
+      req.session.cognitoUser = result.user;
       req.session.cognitoUserConfirmed = result.userConfirmed;
-      console.log('user name is ' + cognitoUser.getUsername());
+      console.log('user name is ' + result.user.getUsername());
       res.render('cognito/confirm-user', {messages: messages, hasErrors: messages.length > 0});
   });
 });
@@ -58,19 +58,29 @@ router.post('/confirm-user', function(req, res, next) {
 
   var userPool = new AWSCognito.CognitoUserPool(poolData);
   var userData = {
-      Username : 'username',
+      Username : req.session.cognitoUser.username,
       Pool : userPool
   };
 
   var cognitoUser = new AWSCognito.CognitoUser(userData);
   cognitoUser.confirmRegistration(req.body.code, true, function(err, result) {
-      if (err) {
-          alert(err);
-          return;
+    if (err) {
+      for (var key in err) {
+        if (err.hasOwnProperty(key) && typeof(err[key]) !== 'function') {
+          messages.push(key + ' : ' + err[key]);
+        }
       }
-      console.log('call result: ' + result);
-      res.render('cognito/profile', {messages: messages, hasErrors: messages.length > 0});
+      res.render('/confirm-user', {messages: messages, hasErrors: messages.length > 0});
+      return;
+    }
+    console.log('call result: ' + result);
+    res.redirct('/signin', {messages: messages, hasErrors: messages.length > 0});
   });
+});
+
+router.get('/profile', function(req, res, next) {
+  var messages = req.flash('error');
+  res.render('cognito/profile', {messages: messages, hasErrors: messages.length > 0});
 });
 
 router.post('/resend-code', function(req, res, next) {
