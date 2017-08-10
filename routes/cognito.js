@@ -4,7 +4,7 @@ var router = express.Router();
 var AWS = require('aws-sdk');
 var AWSCognito = require('amazon-cognito-identity-js-node');
 
-var auth = require('../config/auth');
+var Auth = require('../config/auth');
 
 
 router.get('/signup', function(req, res, next) {
@@ -16,8 +16,8 @@ router.post('/signup', function(req, res, next) {
   var messages = req.flash('error');
 
   var poolData = {
-      UserPoolId : auth.AWS.UserPoolId,
-      ClientId : auth.AWS.ClientId
+      UserPoolId : Auth.AWS.UserPoolId,
+      ClientId : Auth.AWS.ClientId
   };
 
   var userPool = new AWSCognito.CognitoUserPool(poolData);
@@ -44,16 +44,21 @@ router.post('/signup', function(req, res, next) {
       req.session.cognitoUser = result.user;
       req.session.cognitoUserConfirmed = result.userConfirmed;
       console.log('user name is ' + result.user.getUsername());
-      res.render('cognito/confirm-user', {messages: messages, hasErrors: messages.length > 0});
+      res.redirect('/cognito/verify-code');
   });
 });
 
-router.post('/confirm-user', function(req, res, next) {
+router.get('/verify-code', function(req, res, next) {
+  var messages = req.flash('error');
+  res.render('cognito/verify-code', {messages: messages, hasErrors: messages.length > 0});
+});
+
+router.post('/verify-code', function(req, res, next) {
   var messages = req.flash('error');
 
   var poolData = {
-      UserPoolId : auth.AWS.UserPoolId,
-      ClientId : auth.AWS.ClientId
+      UserPoolId : Auth.AWS.UserPoolId,
+      ClientId : Auth.AWS.ClientId
   };
 
   var userPool = new AWSCognito.CognitoUserPool(poolData);
@@ -70,25 +75,20 @@ router.post('/confirm-user', function(req, res, next) {
           messages.push(key + ' : ' + err[key]);
         }
       }
-      res.render('/confirm-user', {messages: messages, hasErrors: messages.length > 0});
+      res.render('/cognito/verify-code', {messages: messages, hasErrors: messages.length > 0});
       return;
     }
     console.log('call result: ' + result);
-    res.redirct('/signin', {messages: messages, hasErrors: messages.length > 0});
+    res.redirect('/cognito/signin');
   });
-});
-
-router.get('/profile', function(req, res, next) {
-  var messages = req.flash('error');
-  res.render('cognito/profile', {messages: messages, hasErrors: messages.length > 0});
 });
 
 router.post('/resend-code', function(req, res, next) {
   var messages = req.flash('error');
 
   var poolData = {
-      UserPoolId : auth.AWS.UserPoolId,
-      ClientId : auth.AWS.ClientId
+      UserPoolId : Auth.AWS.UserPoolId,
+      ClientId : Auth.AWS.ClientId
   };
 
   var userPool = new AWSCognito.CognitoUserPool(poolData);
@@ -106,5 +106,60 @@ router.post('/resend-code', function(req, res, next) {
       console.log('call result: ' + result);
   });
 });
+
+router.get('/signin', function(req, res, next) {
+  var messages = req.flash('error');
+  res.render('cognito/signin', {messages: messages, hasErrors: messages.length > 0});
+});
+
+router.post('/signin', function(req, res, next) {
+  var messages = req.flash('error');
+  var authenticationData = {
+       Username : req.body.username,
+       Password : req.body.password,
+   };
+   var authenticationDetails = new AWSCognito.AuthenticationDetails(authenticationData);
+   var poolData = {
+       UserPoolId : Auth.AWS.UserPoolId,
+       ClientId : Auth.AWS.ClientId
+   };
+   var userPool = new AWSCognito.CognitoUserPool(poolData);
+   var userData = {
+     Username : req.body.username,
+     Pool : userPool
+   };
+   var cognitoUser = new AWSCognito.CognitoUser(userData);
+   cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+            console.log('access token + ' + result.getAccessToken().getJwtToken());
+
+            //POTENTIAL: Region needs to be set if not already set previously elsewhere.
+            AWS.config.region = Auth.AWS.Region;
+
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId : Auth.AWS.UserPoolId, // your identity pool id here
+                Logins : {
+                    // Change the key below according to the specific region your user pool is in.
+                    ['cognito-idp.'+ Auth.AWS.Region + '.amazonaws.com/'+ Auth.AWS.UserPoolId] : result.getIdToken().getJwtToken()
+                }
+            });
+
+            // Instantiate aws sdk service objects now that the credentials have been updated.
+            // example: var s3 = new AWS.S3();
+
+        },
+
+        onFailure: function(err) {
+            alert(err);
+        },
+
+    });
+});
+
+router.get('/profile', function(req, res, next) {
+  var messages = req.flash('error');
+  res.render('cognito/profile', {messages: messages, hasErrors: messages.length > 0});
+});
+
 
 module.exports = router;

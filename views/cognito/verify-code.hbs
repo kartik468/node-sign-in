@@ -1,27 +1,18 @@
 <div class="row">
     <div class="col-md-4 col-md-offset-4">
         <h1>Cognito Sign Up</h1>
-        {{#if hasErrors}}
-            <div class="alert alert-danger">
-                {{# each messages }}
-                    <p>{{this}}</p>
-                {{/each}}
-            </div>
-        {{/if}}
-        <form action="/cognito/confirm-user" method="post">
+        <form action="/cognito/verify-code" method="post">
             <div class="form-group">
                 <label for="code">Enter code received on email</label>
                 <input type="text" id="code" name="code" class="form-control">
             </div>
             <button type="submit" id="cognito-signup" class="btn btn-primary">Submit</button>
         </form>
-
         <form action="/cognito/resend-code" method="post">
             <div class="form-group">
                 <label for="code">Resend code</label>
             	<button type="submit" id="cognito-signup" class="btn btn-primary">Resend</button>
             </div>
         </form>
-
     </div>
 </div>

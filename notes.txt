@@ -1,3 +1,7 @@
+create folder for cognito signin C:\tmp\storage
+
+-- MongoDB on windows --
+mongod --port 27017 --dbpath C:\MongoDB\data\db
 
 -- MongoDB on Ubuntu 16.04--
 Failed to start mongod.service: Unit mongod.service not found.

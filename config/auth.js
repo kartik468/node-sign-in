@@ -12,6 +12,7 @@ module.exports = {
   },
   "AWS": {
     "UserPoolId": "ap-south-1_E6Riai7xi",
-    "ClientId": "4cvdo1mvnomaist56v6f5gq44r"
+    "ClientId": "4cvdo1mvnomaist56v6f5gq44r",
+    "Region": "ap-south-1"
   }
 }
