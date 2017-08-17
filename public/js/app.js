@@ -2,11 +2,11 @@
   'use strict';
   $( document ).ready(function() {
     $("#cognito-s3-list").on("click", function(event) {
-      var jqxhr = $.post( "/cognito/getS3BucketList", function() {
-        console.log( "success" );
+      var jqxhr = $.post( "/cognito/getS3BucketList", function(data) {
+        console.log(data);
       })
-      .fail(function() {
-        console.error();( "error" );
+      .fail(function(err) {
+        console.error(err);
       })
     });
   });

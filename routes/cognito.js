@@ -155,9 +155,11 @@ router.post('/getS3BucketList', function(req, res, next) {
      s3.listBuckets(params, function(err, data) {
        if(err) {
          console.error(err);
+         res.json(err);
          return;
        }
        console.log(data);
+       res.json(data);
      });
   });
 });
