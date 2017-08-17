@@ -8,7 +8,6 @@
     "debug": "node --inspect --debug-brk server.js"
   },
   "dependencies": {
-    "amazon-cognito-identity-js-node": "0.0.3",
     "aws-sdk": "^2.94.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.13.2",
