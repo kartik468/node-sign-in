@@ -5,9 +5,10 @@
   "scripts": {
     "start": "node ./server.js",
     "nodemon": "nodemon ./server.js",
-    "debug": "node --inspect --debug-brk server.js"
+    "debug": "node --inspect server.js"
   },
   "dependencies": {
+    "amazon-cognito-identity-js": "^1.19.0",
     "aws-sdk": "^2.94.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.13.2",

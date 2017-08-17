@@ -9,5 +9,14 @@
         console.error(err);
       })
     });
+
+    $("#get-user-name").on("click", function(event) {
+      var jqxhr = $.post( "/cognito/getUsername", function(data) {
+        console.log(data);
+      })
+      .fail(function(err) {
+        console.error(err);
+      })
+    });
   });
 }());

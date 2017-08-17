@@ -27,7 +27,7 @@ var userRoutes = require('./routes/user');
 var cognitoRoutes = require('./routes/cognito');
 
 var app = express();
-mongoose.connect('localhost:27017/shopping');
+// mongoose.connect('localhost:27017/shopping');
 require('./config/passport-local');
 require('./config/passport-fb');
 require('./config/passport-amazon');
